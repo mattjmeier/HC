@@ -1,3 +1,3 @@
 # HC
 
-Repository of scripts used for postdoctoral work at Health Canada
+Work relating to genetic toxicology analysis done at Health Canada
