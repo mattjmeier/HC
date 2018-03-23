@@ -11,13 +11,12 @@ printf '\n\n'
 
 echo "What directory would you like to process?"
 #read -e rootdir
-rootdir=/s0/ngs/DNA/pedigrees/BaP/illumina
-#rootdir=/s0/ngs/DNA/ref_gen/mutamouse/illumina/HCNextSeq
+rootdir=/s0/ngs/DNA/transgenic_rodents/mutamouse/illumina/GenomeQuebecNextSeq/
 echo $rootdir
 
 echo "What directory would you like to put the output files in? Please provide the full path."
 #read -e outdir
-outdir=/home/mmeier/DNA/data/mutamouse/variant_calling/alignments/raw/bwa_7.12/
+outdir=/home/mmeier/DNA/transgenic_rodents/lacz/lambdagt10_HC/alignments/wgs_mm10_with_lambda
 echo $outdir
 
 #echo "Would you like to grep for a particular pattern? If so, enter it; if not, leave blank and press enter"
@@ -160,8 +159,9 @@ echo $ID
 echo "What is the biological sample name? E.g., mouse3M"
 #read SM
 # grab sample name from filename
-SM=${fname#*.}
-SM=${SM%%_*}
+#SM=${fname#*.}
+#SM=${SM%%_*}
+sm=$(echo $fname | sed  's/.*\(MutaMouse\)_\([0-9][0-9]\).*/\1\2/')
 echo $SM
 
 echo "what platform was used for sequencing? ILLUMINA, IONTORRENT, PACBIO, etc."
@@ -202,7 +202,7 @@ echo $PU
 
 echo "How many threads should be devoted to processing this file?"
 #read numthreads
-numthreads=7
+numthreads=18
 echo $numthreads
 
 
@@ -211,16 +211,19 @@ echo "Starting now....."
 
 # Start a screen session detatched and named by the file being processed
 # Run commands in new bash shell
-screen -d -m -S "$ID"."$SM".bwa bash -c "/utils/appz/bwa/bwa.kit/bwa mem -M -t $numthreads -R '@RG\tID:"$ID"\tSM:"$SM"\tPL:"$PL"\tLB:"$LB"\tPU:"$PU"' $mm10 $i $i2 |  /utils/appz/samtools/samtools-1.3/samtools view -bh > $outdir/$fname.bam"
+#screen -d -m -S "$ID"."$SM".bwa bash -c "
+/utils/appz/bwa/bwa.kit/bwa mem -M -t $numthreads -R '@RG\tID:"$ID"\tSM:"$SM"\tPL:"$PL"\tLB:"$LB"\tPU:"$PU"' /s0/ngs/references/mouse/ucsc/mm10/index/samtools/mm10_from2bit.lambda.fasta $i $i2 |  /utils/appz/samtools/samtools-1.3/samtools view -bh > $outdir/$fname.bam
+
+#"
 
 # Make sure things start ok
 sleep 5
 
 # Don't start more than X instances of screen at once
-numProc=$(ps auxw|grep -i SCREEN|grep -v grep|wc -l)
-while [ $numProc -gt 5 ]
+numProc=$(ps auxw|grep -i samtools|grep -v grep|wc -l)
+while [ $numProc -gt  1]
 do sleep 5
-numProc=$(ps auxw|grep -i SCREEN|grep -v grep|wc -l)
+numProc=$(ps auxw|grep -i samtools|grep -v grep|wc -l)
 done
 
 done
