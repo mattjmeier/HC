@@ -1,3 +1,5 @@
+#!/usr/bin/Rscript
+
 args <- commandArgs(TRUE)
 
 # TO RUN ON MANY FILES, USE THE FOLLOWING COMMAND IN BASH:
