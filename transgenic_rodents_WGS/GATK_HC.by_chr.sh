@@ -61,7 +61,7 @@ fname=${fname%.*}
 echo "Starting for $fname"
 
 #for chr in $(echo chrM) ### FOR TESTING
-for chr in $(cat /s0/ngs/references/mouse/ucsc/mm10/index/samtools/chr_list.txt)
+for chr in $(cat chr_list.txt)
 do
 echo $chr
 
